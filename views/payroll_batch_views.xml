@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- List View -->
+    <record id="view_payroll_batch_list" model="ir.ui.view">
+        <field name="name">my_hr.payroll.batch.list</field>
+        <field name="model">my_hr.payroll.batch</field>
+        <field name="arch" type="xml">
+            <list string="Payroll Batches"
+                  decoration-info="state == 'draft'"
+                  decoration-warning="state in ('manager_approve','ceo_approve')"
+                  decoration-success="state == 'published'"
+                  decoration-danger="state == 'cancelled'">
+                <field name="name"/>
+                <field name="date_from"/>
+                <field name="date_to"/>
+                <field name="payslip_count" string="Payslips"/>
+                <field name="state" widget="badge"
+                       decoration-info="state == 'draft'"
+                       decoration-warning="state in ('manager_approve','ceo_approve')"
+                       decoration-success="state == 'published'"
+                       decoration-danger="state == 'cancelled'"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_payroll_batch_form" model="ir.ui.view">
+        <field name="name">my_hr.payroll.batch.form</field>
+        <field name="model">my_hr.payroll.batch</field>
+        <field name="arch" type="xml">
+            <form string="Payroll Batch">
+                <header>
+                    <button name="action_generate_payslips" string="Generate Payslips"
+                            type="object" class="btn-primary"
+                            invisible="state != 'draft'"/>
+                    <button name="action_submit_manager" string="Submit for Approval"
+                            type="object" class="btn-primary"
+                            invisible="state != 'draft'"
+                            confirm="Submit this batch for manager approval?"/>
+                    <button name="action_manager_approve" string="Manager Approve"
+                            type="object" class="btn-primary"
+                            invisible="state != 'manager_approve'"
+                            groups="my_hr.group_my_hr_manager"/>
+                    <button name="action_ceo_approve" string="CEO Approve &amp; Publish"
+                            type="object" class="btn-success"
+                            invisible="state != 'ceo_approve'"
+                            groups="my_hr.group_my_hr_payroll"
+                            confirm="Publish this payroll batch? This cannot be undone."/>
+                    <button name="action_export_wps" string="Export WPS File"
+                            type="object" class="btn-secondary"
+                            invisible="state != 'published'"/>
+                    <button name="action_cancel" string="Cancel"
+                            type="object" class="btn-danger"
+                            invisible="state in ('published','cancelled')"
+                            confirm="Cancel this batch?"/>
+                    <button name="action_reset_draft" string="Reset to Draft"
+                            type="object"
+                            invisible="state in ('draft','published','cancelled')"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,manager_approve,ceo_approve,published"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="state != 'draft'"
+                                   placeholder="Payroll Batch Name..."/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Period">
+                            <field name="date_from" readonly="state != 'draft'"/>
+                            <field name="date_to" readonly="state != 'draft'"/>
+                        </group>
+                        <group string="Info">
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="payslip_count" readonly="1"/>
+                        </group>
+                    </group>
+                    <group string="WPS Export" invisible="not wps_file">
+                        <field name="wps_file" filename="wps_filename" widget="binary"/>
+                        <field name="wps_filename" invisible="1"/>
+                    </group>
+                    <field name="notes" placeholder="Internal notes..."/>
+                    <notebook>
+                        <page string="Payslips">
+                            <field name="payslip_ids" readonly="state != 'draft'">
+                                <list>
+                                    <field name="employee_id"/>
+                                    <field name="basic_salary"/>
+                                    <field name="gross_salary"/>
+                                    <field name="gosi_deduction"/>
+                                    <field name="attendance_deduction"/>
+                                    <field name="missing_hours"/>
+                                    <field name="net_salary"/>
+                                    <field name="state" widget="badge"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_payroll_batch_search" model="ir.ui.view">
+        <field name="name">my_hr.payroll.batch.search</field>
+        <field name="model">my_hr.payroll.batch</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <filter name="draft" string="Draft" domain="[('state','=','draft')]"/>
+                <filter name="pending" string="Pending Approval"
+                        domain="[('state','in',('manager_approve','ceo_approve'))]"/>
+                <filter name="published" string="Published"
+                        domain="[('state','=','published')]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_state" string="Status"
+                            context="{'group_by': 'state'}"/>
+                    <filter name="group_company" string="Company"
+                            context="{'group_by': 'company_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_payroll_batch" model="ir.actions.act_window">
+        <field name="name">Payroll Batches</field>
+        <field name="res_model">my_hr.payroll.batch</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_draft': 1}</field>
+    </record>
+</odoo>

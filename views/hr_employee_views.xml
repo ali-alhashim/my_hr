@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Inherit HR Employee Form - Add Payroll & Geofence Tabs -->
+    <record id="view_hr_employee_form_my_hr" model="ir.ui.view">
+        <field name="name">hr.employee.form.my_hr</field>
+        <field name="model">hr.employee</field>
+        <field name="inherit_id" ref="hr.view_employee_form"/>
+        <field name="arch" type="xml">
+
+            <!-- Add Payroll tab after Work Information -->
+            <xpath expr="//notebook" position="inside">
+                <page string="Salary &amp; Payroll" name="my_hr_salary"
+                      groups="my_hr.group_my_hr_payroll">
+                    <group>
+                        <group string="Basic &amp; Allowances">
+                            <field name="basic_salary"/>
+                            <separator string="Housing Allowance"/>
+                            <field name="housing_type"/>
+                            <field name="housing_value"
+                                   invisible="housing_type != 'fixed'"/>
+                            <field name="housing_rate"
+                                   invisible="housing_type != 'percentage'"/>
+                            <field name="housing_allowance" readonly="1"/>
+                            <separator string="Transport Allowance"/>
+                            <field name="transport_type"/>
+                            <field name="transport_value"
+                                   invisible="transport_type != 'fixed'"/>
+                            <field name="transport_rate"
+                                   invisible="transport_type != 'percentage'"/>
+                            <field name="transport_allowance" readonly="1"/>
+                        </group>
+                        <group string="Deductions &amp; Net">
+                            <field name="gross_salary" readonly="1"/>
+                            <field name="gosi_rate"/>
+                            <field name="exempt_from_deduction"/>
+                        </group>
+                    </group>
+                    <group string="Banking (WPS)">
+                        <field name="bank_account_id"/>
+                    </group>
+                </page>
+
+                <page string="Geofence Access" name="my_hr_geofence"
+                      groups="my_hr.group_my_hr_manager">
+                    <field name="allowed_office_ids" widget="many2many_tags"
+                           options="{'color_field': 'color'}"/>
+                    <p class="text-muted mt-2">
+                        Leave empty to allow check-in from any location.
+                    </p>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

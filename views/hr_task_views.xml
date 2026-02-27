@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Form View -->
+    <record id="view_hr_task_form" model="ir.ui.view">
+        <field name="name">my.hr.task.form</field>
+        <field name="model">my.hr.task</field>
+        <field name="arch" type="xml">
+            <form string="HR Task / Request">
+                <header>
+                    <!-- Request flow -->
+                    <button name="action_submit" string="Submit Request"
+                            type="object" class="btn-primary"
+                            invisible="state != 'draft' or task_type != 'request'"/>
+                    <button name="action_approve" string="Approve"
+                            type="object" class="btn-success"
+                            invisible="state != 'submitted'"
+                            groups="my_hr.group_my_hr_manager"/>
+                    <button name="action_reject" string="Reject"
+                            type="object" class="btn-danger"
+                            invisible="state != 'submitted'"
+                            groups="my_hr.group_my_hr_manager"/>
+                    <!-- Assignment flow -->
+                    <button name="action_assign" string="Assign Task"
+                            type="object" class="btn-primary"
+                            invisible="state != 'draft' or task_type != 'assignment'"
+                            groups="my_hr.group_my_hr_manager"/>
+                    <!-- Both flows -->
+                    <button name="action_mark_done" string="Mark as Done"
+                            type="object" class="btn-success"
+                            invisible="state not in ('assigned','approved')"/>
+                    <button name="action_reset_draft" string="Reset to Draft"
+                            type="object"
+                            invisible="state in ('draft','done','approved')"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,submitted,assigned,approved,done"/>
+                </header>
+                <sheet>
+                    <widget name="web_ribbon" text="Rejected" bg_color="text-bg-danger"
+                            invisible="state != 'rejected'"/>
+                    <div class="oe_title">
+                        <label for="name" class="oe_edit_only"/>
+                        <h1>
+                            <field name="name"
+                                   placeholder="Task subject..."
+                                   readonly="state not in ('draft',)"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="task_type" readonly="state != 'draft'"/>
+                            <field name="employee_id" readonly="state != 'draft'"/>
+                            <field name="manager_id"/>
+                        </group>
+                        <group>
+                            <field name="priority" widget="priority"/>
+                            <field name="deadline"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+                    <field name="description" placeholder="Describe the request or task..."
+                           readonly="state not in ('draft',)"/>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- List View -->
+    <record id="view_hr_task_list" model="ir.ui.view">
+        <field name="name">my.hr.task.list</field>
+        <field name="model">my.hr.task</field>
+        <field name="arch" type="xml">
+            <list string="HR Tasks"
+                  decoration-warning="state == 'submitted'"
+                  decoration-info="state == 'assigned'"
+                  decoration-success="state in ('approved','done')"
+                  decoration-danger="state == 'rejected'">
+                <field name="priority" widget="priority" nolabel="1" optional="show"/>
+                <field name="name"/>
+                <field name="task_type"/>
+                <field name="employee_id"/>
+                <field name="manager_id"/>
+                <field name="deadline"/>
+                <field name="state" widget="badge"
+                       decoration-warning="state == 'submitted'"
+                       decoration-info="state == 'assigned'"
+                       decoration-success="state in ('approved','done')"
+                       decoration-danger="state == 'rejected'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Kanban View -->
+    <record id="view_hr_task_kanban" model="ir.ui.view">
+        <field name="name">my.hr.task.kanban</field>
+        <field name="model">my.hr.task</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="state" class="o_kanban_small_column">
+                <field name="name"/>
+                <field name="state"/>
+                <field name="task_type"/>
+                <field name="employee_id"/>
+                <field name="manager_id"/>
+                <field name="deadline"/>
+                <field name="priority"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_global_click">
+                            <div class="o_kanban_record_top">
+                                <div class="o_kanban_record_headings">
+                                    <strong><field name="name"/></strong>
+                                </div>
+                                <field name="priority" widget="priority"/>
+                            </div>
+                            <div class="o_kanban_record_body">
+                                <span class="badge rounded-pill"
+                                      t-att-class="record.task_type.raw_value == 'request' ? 'text-bg-info' : 'text-bg-warning'">
+                                    <field name="task_type"/>
+                                </span>
+                            </div>
+                            <div class="o_kanban_record_bottom">
+                                <div class="oe_kanban_bottom_left">
+                                    <field name="employee_id" widget="many2one_avatar_employee"/>
+                                </div>
+                                <div class="oe_kanban_bottom_right">
+                                    <span t-if="record.deadline.raw_value" class="text-muted small">
+                                        <field name="deadline"/>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_hr_task_search" model="ir.ui.view">
+        <field name="name">my.hr.task.search</field>
+        <field name="model">my.hr.task</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="employee_id"/>
+                <filter name="my_tasks" string="My Tasks"
+                        domain="[('employee_id.user_id','=',uid)]"/>
+                <filter name="my_managed" string="Managed by Me"
+                        domain="[('manager_id.user_id','=',uid)]"/>
+                <filter name="pending" string="Pending"
+                        domain="[('state','in',('submitted','assigned'))]"/>
+                <filter name="requests" string="Requests"
+                        domain="[('task_type','=','request')]"/>
+                <filter name="assignments" string="Assignments"
+                        domain="[('task_type','=','assignment')]"/>
+                <group string="Group By">
+                    <filter name="group_state" string="Status"
+                            context="{'group_by': 'state'}"/>
+                    <filter name="group_type" string="Type"
+                            context="{'group_by': 'task_type'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Actions -->
+    <record id="action_hr_task_my" model="ir.actions.act_window">
+        <field name="name">My Requests</field>
+        <field name="res_model">my.hr.task</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="domain">[('employee_id.user_id','=',uid)]</field>
+        <field name="context">{'default_task_type': 'request', 'search_default_my_tasks': 1}</field>
+    </record>
+
+    <record id="action_hr_task_manager" model="ir.actions.act_window">
+        <field name="name">Team Tasks &amp; Requests</field>
+        <field name="res_model">my.hr.task</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="context">{'search_default_my_managed': 1}</field>
+    </record>
+</odoo>

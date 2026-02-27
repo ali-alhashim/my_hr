@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates xml:space="preserve">
+    <t t-name="my_hr.SystrayCheckin">
+        <div class="o_systray_item my_hr_checkin_btn"
+             t-on-click="onClick"
+             t-att-class="state.checkedIn ? 'checked_in' : 'checked_out'"
+             t-att-title="state.checkedIn ? 'Check Out (' + state.checkInTime + ')' : 'Check In'">
+            <i t-att-class="state.loading ? 'fa fa-spinner fa-spin' :
+                            state.checkedIn ? 'fa fa-sign-out' : 'fa fa-sign-in'"/>
+            <span class="d-none d-md-inline ms-1">
+                <t t-if="state.loading">Processing...</t>
+                <t t-elif="state.checkedIn">Check Out</t>
+                <t t-else="">Check In</t>
+            </span>
+        </div>
+    </t>
+</templates>

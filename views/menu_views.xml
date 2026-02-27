@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Root Menu -->
+    <menuitem id="menu_my_hr_root"
+              name="My HR"
+              sequence="90"
+              web_icon="my_hr,static/description/icon.png"/>
+
+    <!-- Employee Menu -->
+    <menuitem id="menu_my_hr_employee_root"
+              name="My Space"
+              parent="menu_my_hr_root"
+              sequence="10"/>
+
+    <menuitem id="menu_my_hr_dashboard"
+              name="Dashboard"
+              parent="menu_my_hr_employee_root"
+              action="action_my_hr_dashboard"
+              sequence="10"/>
+
+    <menuitem id="menu_my_payslips"
+              name="My Payslips"
+              parent="menu_my_hr_employee_root"
+              action="action_my_payslips"
+              sequence="20"/>
+
+    <menuitem id="menu_my_tasks"
+              name="My Requests"
+              parent="menu_my_hr_employee_root"
+              action="action_hr_task_my"
+              sequence="30"/>
+
+    <!-- Manager Menu -->
+    <menuitem id="menu_my_hr_manager_root"
+              name="Team Management"
+              parent="menu_my_hr_root"
+              sequence="20"
+              groups="my_hr.group_my_hr_manager"/>
+
+    <menuitem id="menu_team_tasks"
+              name="Team Tasks &amp; Requests"
+              parent="menu_my_hr_manager_root"
+              action="action_hr_task_manager"
+              sequence="10"
+              groups="my_hr.group_my_hr_manager"/>
+
+    <!-- Payroll Menu -->
+    <menuitem id="menu_my_hr_payroll_root"
+              name="Payroll"
+              parent="menu_my_hr_root"
+              sequence="30"
+              groups="my_hr.group_my_hr_payroll"/>
+
+    <menuitem id="menu_payroll_batches"
+              name="Payroll Batches"
+              parent="menu_my_hr_payroll_root"
+              action="action_payroll_batch"
+              sequence="10"
+              groups="my_hr.group_my_hr_payroll"/>
+
+    <menuitem id="menu_all_payslips"
+              name="All Payslips"
+              parent="menu_my_hr_payroll_root"
+              action="action_all_payslips"
+              sequence="20"
+              groups="my_hr.group_my_hr_payroll"/>
+
+    <!-- Configuration Menu -->
+    <menuitem id="menu_my_hr_config_root"
+              name="Configuration"
+              parent="menu_my_hr_root"
+              sequence="100"
+              groups="my_hr.group_my_hr_manager"/>
+
+    <menuitem id="menu_office_geofences"
+              name="Office Geofences"
+              parent="menu_my_hr_config_root"
+              action="action_hr_office_geofence"
+              sequence="10"
+              groups="my_hr.group_my_hr_manager"/>
+</odoo>

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- List View -->
+    <record id="view_hr_office_geofence_list" model="ir.ui.view">
+        <field name="name">hr.office.geofence.list</field>
+        <field name="model">hr.office.geofence</field>
+        <field name="arch" type="xml">
+            <list string="Office Geofences" decoration-danger="not active">
+                <field name="name"/>
+                <field name="latitude"/>
+                <field name="longitude"/>
+                <field name="radius"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="active" column_invisible="True"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_hr_office_geofence_form" model="ir.ui.view">
+        <field name="name">hr.office.geofence.form</field>
+        <field name="model">hr.office.geofence</field>
+        <field name="arch" type="xml">
+            <form string="Office Geofence">
+                <sheet>
+                    <widget name="web_ribbon" text="Archived" bg_color="text-bg-danger"
+                            invisible="active"/>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Office Name..."/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Location">
+                            <field name="latitude" digits="[10, 7]"/>
+                            <field name="longitude" digits="[10, 7]"/>
+                            <field name="radius"/>
+                        </group>
+                        <group string="Configuration">
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Assigned Employees">
+                            <field name="employee_ids" widget="many2many_tags"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_hr_office_geofence_search" model="ir.ui.view">
+        <field name="name">hr.office.geofence.search</field>
+        <field name="model">hr.office.geofence</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <filter name="active" string="Active" domain="[('active','=',True)]"/>
+                <filter name="inactive" string="Archived" domain="[('active','=',False)]"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_hr_office_geofence" model="ir.actions.act_window">
+        <field name="name">Office Geofences</field>
+        <field name="res_model">hr.office.geofence</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

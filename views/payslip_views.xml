@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Form View -->
+    <record id="view_payslip_form" model="ir.ui.view">
+        <field name="name">my_hr.payslip.form</field>
+        <field name="model">my_hr.payslip</field>
+        <field name="arch" type="xml">
+            <form string="Payslip">
+                <header>
+                    <button name="action_compute" string="Re-Compute"
+                            type="object"
+                            invisible="state != 'draft'"/>
+                    <button name="action_confirm" string="Confirm"
+                            type="object" class="btn-primary"
+                            invisible="state != 'draft'"
+                            groups="my_hr.group_my_hr_payroll"/>
+                    <button name="action_reset_draft" string="Reset to Draft"
+                            type="object"
+                            invisible="state != 'confirmed'"
+                            groups="my_hr.group_my_hr_payroll"/>
+                    <button name="action_cancel" string="Cancel"
+                            type="object" class="btn-danger"
+                            invisible="state == 'cancelled'"
+                            groups="my_hr.group_my_hr_payroll"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,confirmed"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="display_name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="employee_id" readonly="1"/>
+                            <field name="batch_id" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="date_from" readonly="1"/>
+                            <field name="date_to" readonly="1"/>
+                        </group>
+                    </group>
+                    <group string="Salary Breakdown">
+                        <group string="Earnings">
+                            <field name="basic_salary" readonly="1"/>
+                            <field name="housing_allowance" readonly="1"/>
+                            <field name="transport_allowance" readonly="1"/>
+                            <field name="gross_salary" readonly="1"
+                                   class="fw-bold"/>
+                        </group>
+                        <group string="Deductions">
+                            <field name="gosi_deduction" readonly="1"/>
+                            <field name="missing_hours" readonly="1"/>
+                            <field name="attendance_deduction" readonly="1"/>
+                            <separator/>
+                            <field name="net_salary" readonly="1"
+                                   class="fw-bold text-success"/>
+                        </group>
+                    </group>
+                    <field name="notes" placeholder="Notes..."/>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- List View -->
+    <record id="view_payslip_list" model="ir.ui.view">
+        <field name="name">my_hr.payslip.list</field>
+        <field name="model">my_hr.payslip</field>
+        <field name="arch" type="xml">
+            <list string="Payslips"
+                  decoration-success="state == 'confirmed'"
+                  decoration-danger="state == 'cancelled'">
+                <field name="display_name"/>
+                <field name="employee_id"/>
+                <field name="date_from"/>
+                <field name="date_to"/>
+                <field name="gross_salary"/>
+                <field name="net_salary"/>
+                <field name="state" widget="badge"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- My Payslips action (for employees) -->
+    <record id="action_my_payslips" model="ir.actions.act_window">
+        <field name="name">My Payslips</field>
+        <field name="res_model">my_hr.payslip</field>
+        <field name="view_mode">list,form</field>
+        <field name="domain">[('employee_id.user_id', '=', uid)]</field>
+        <field name="context">{'search_default_confirmed': 1}</field>
+    </record>
+
+    <!-- All Payslips action (for payroll managers) -->
+    <record id="action_all_payslips" model="ir.actions.act_window">
+        <field name="name">All Payslips</field>
+        <field name="res_model">my_hr.payslip</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

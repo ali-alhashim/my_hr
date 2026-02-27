@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <!-- Annual Leave - accrues balance -->
+    <record id="leave_type_annual" model="hr.leave.type">
+        <field name="name">Annual Leave</field>
+        <field name="leave_validation_type">hr</field>
+        <field name="my_hr_accrual" eval="True"/>
+        <field name="my_hr_affects_balance" eval="True"/>
+        <field name="requires_allocation">yes</field>
+    </record>
+
+    <!-- Sick Leave -->
+    <record id="leave_type_sick" model="hr.leave.type">
+        <field name="name">Sick Leave</field>
+        <field name="leave_validation_type">hr</field>
+        <field name="my_hr_accrual" eval="False"/>
+        <field name="my_hr_affects_balance" eval="True"/>
+        <field name="requires_allocation">yes</field>
+    </record>
+
+    <!-- Unpaid Leave - does NOT affect balance -->
+    <record id="leave_type_unpaid" model="hr.leave.type">
+        <field name="name">Unpaid Leave</field>
+        <field name="leave_validation_type">hr</field>
+        <field name="my_hr_accrual" eval="False"/>
+        <field name="my_hr_affects_balance" eval="False"/>
+        <field name="requires_allocation">no</field>
+    </record>
+</odoo>

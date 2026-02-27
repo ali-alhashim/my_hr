@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Extend hr.attendance list to show photo and geofence -->
+    <record id="view_hr_attendance_list_my_hr" model="ir.ui.view">
+        <field name="name">hr.attendance.list.my_hr</field>
+        <field name="model">hr.attendance</field>
+        <field name="inherit_id" ref="hr_attendance.view_attendance_list"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='check_out']" position="after">
+                <field name="geofence_id" optional="show"/>
+                <field name="ip_address" optional="hide"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Extend hr.attendance form -->
+    <record id="view_hr_attendance_form_my_hr" model="ir.ui.view">
+        <field name="name">hr.attendance.form.my_hr</field>
+        <field name="model">hr.attendance</field>
+        <field name="inherit_id" ref="hr_attendance.hr_attendance_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <notebook>
+                    <page string="Location &amp; Device">
+                        <group>
+                            <group string="GPS Coordinates">
+                                <field name="check_in_latitude"/>
+                                <field name="check_in_longitude"/>
+                                <field name="geofence_id" readonly="1"/>
+                            </group>
+                            <group string="Device Info">
+                                <field name="ip_address" readonly="1"/>
+                                <field name="device_info" readonly="1"/>
+                            </group>
+                        </group>
+                    </page>
+                    <page string="Check-in Photo">
+                        <field name="check_in_photo" widget="image"
+                               options="{'size': [320, 240]}"/>
+                    </page>
+                </notebook>
+            </xpath>
+        </field>
+    </record>
+</odoo>

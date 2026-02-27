@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<templates xml:space="preserve">
+    <t t-name="my_hr.Dashboard">
+        <div class="my_hr_dashboard o_action">
+
+            <!-- Loading -->
+            <div t-if="state.loading" class="my_hr_loading">
+                <i class="fa fa-spinner fa-spin fa-3x text-primary"/>
+                <p class="mt-3 text-muted">Loading your dashboard...</p>
+            </div>
+
+            <!-- Error -->
+            <div t-elif="state.error" class="alert alert-danger m-4">
+                <i class="fa fa-exclamation-triangle me-2"/>
+                <t t-esc="state.error"/>
+            </div>
+
+            <!-- Dashboard Content -->
+            <div t-else="">
+                <!-- Header -->
+                <div class="my_hr_header">
+                    <div class="my_hr_header_inner">
+                        <h2 class="my_hr_welcome">
+                            <i class="fa fa-user-circle me-2"/>
+                            Welcome, <strong t-esc="state.employeeName"/>
+                        </h2>
+                        <button class="btn btn-sm btn-outline-light" t-on-click="_loadData">
+                            <i class="fa fa-refresh me-1"/>Refresh
+                        </button>
+                    </div>
+                </div>
+
+                <!-- KPI Cards -->
+                <div class="my_hr_kpi_row">
+                    <div class="my_hr_kpi_card my_hr_kpi_leave">
+                        <div class="my_hr_kpi_icon">
+                            <i class="fa fa-calendar-check-o"/>
+                        </div>
+                        <div class="my_hr_kpi_body">
+                            <div class="my_hr_kpi_value" t-esc="state.leaveBalance.toFixed(1)"/>
+                            <div class="my_hr_kpi_label">Leave Balance (days)</div>
+                        </div>
+                    </div>
+                    <div class="my_hr_kpi_card my_hr_kpi_pay">
+                        <div class="my_hr_kpi_icon">
+                            <i class="fa fa-money"/>
+                        </div>
+                        <div class="my_hr_kpi_body">
+                            <div class="my_hr_kpi_value" t-esc="state.nextPayDate"/>
+                            <div class="my_hr_kpi_label">Next Pay Date</div>
+                        </div>
+                    </div>
+                    <div class="my_hr_kpi_card my_hr_kpi_hours">
+                        <div class="my_hr_kpi_icon">
+                            <i class="fa fa-clock-o"/>
+                        </div>
+                        <div class="my_hr_kpi_body">
+                            <div class="my_hr_kpi_value" t-esc="state.totalHours + 'h'"/>
+                            <div class="my_hr_kpi_label">Hours This Month</div>
+                        </div>
+                    </div>
+                    <div class="my_hr_kpi_card my_hr_kpi_tasks" t-on-click="openMyRequests">
+                        <div class="my_hr_kpi_icon">
+                            <i class="fa fa-tasks"/>
+                        </div>
+                        <div class="my_hr_kpi_body">
+                            <div class="my_hr_kpi_value">→</div>
+                            <div class="my_hr_kpi_label">My Requests</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Content Grid -->
+                <div class="my_hr_content_grid">
+                    <!-- Calendar -->
+                    <div class="my_hr_card my_hr_calendar_card">
+                        <div class="my_hr_card_header">
+                            <i class="fa fa-calendar me-2"/>
+                            <span>Attendance Calendar</span>
+                        </div>
+                        <div class="my_hr_calendar" t-if="state.calendar">
+                            <!-- Day headers -->
+                            <div class="my_hr_cal_header">
+                                <span>Sun</span><span>Mon</span><span>Tue</span>
+                                <span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span>
+                            </div>
+                            <!-- Day cells -->
+                            <div class="my_hr_cal_grid">
+                                <t t-foreach="getCalendarDays()" t-as="cell" t-key="cell_index">
+                                    <div t-if="!cell.day" class="my_hr_cal_empty"/>
+                                    <div t-else=""
+                                         class="my_hr_cal_day"
+                                         t-att-class="{
+                                             'is_today': cell.isToday,
+                                             'has_attendance': cell.hasAttendance,
+                                             'has_leave': cell.hasLeave
+                                         }">
+                                        <span t-esc="cell.day"/>
+                                        <div class="my_hr_cal_dots">
+                                            <span t-if="cell.hasAttendance"
+                                                  class="my_hr_cal_dot dot_attendance"
+                                                  title="Attendance recorded"/>
+                                            <span t-if="cell.hasLeave"
+                                                  class="my_hr_cal_dot dot_leave"
+                                                  title="Time Off"/>
+                                        </div>
+                                    </div>
+                                </t>
+                            </div>
+                            <!-- Legend -->
+                            <div class="my_hr_cal_legend">
+                                <span><span class="my_hr_cal_dot dot_attendance"/>Attendance</span>
+                                <span><span class="my_hr_cal_dot dot_leave"/>Time Off</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Payslip List -->
+                    <div class="my_hr_card my_hr_payslips_card">
+                        <div class="my_hr_card_header">
+                            <i class="fa fa-file-text-o me-2"/>
+                            <span>Recent Payslips</span>
+                        </div>
+                        <div t-if="!state.payslips.length" class="my_hr_empty_state">
+                            <i class="fa fa-inbox fa-2x text-muted"/>
+                            <p class="text-muted">No payslips available yet.</p>
+                        </div>
+                        <div t-else="" class="my_hr_payslip_list">
+                            <t t-foreach="state.payslips" t-as="slip" t-key="slip.id">
+                                <div class="my_hr_payslip_item"
+                                     t-on-click="() => openPayslip(slip.id)">
+                                    <div class="my_hr_payslip_info">
+                                        <div class="my_hr_payslip_period" t-esc="slip.date"/>
+                                        <div class="my_hr_payslip_name" t-esc="slip.name"/>
+                                    </div>
+                                    <div class="my_hr_payslip_amount">
+                                        <span t-esc="formatCurrency(slip.net_salary, slip.currency)"/>
+                                    </div>
+                                    <i class="fa fa-chevron-right text-muted ms-2"/>
+                                </div>
+                            </t>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+</templates>
