@@ -12,11 +12,11 @@
         - Employee Dashboard with Task/Request Management
     """,
     'author': 'Ali Musa Alhashim',
-    'depends': ['hr', 'hr_attendance', 'hr_holidays', 'mail', 'web'],
+    'depends': ['hr', 'hr_attendance', 'hr_holidays', 'mail', 'web','base'],
     'data': [
         # Security
-        'security/my_hr_security.xml',
-        'security/ir.model.access.csv',
+        'security/my_hr_groups.xml',
+        
         # Data
         'data/leave_type_data.xml',
         'data/cron_data.xml',
@@ -39,6 +39,7 @@
             'my_hr/static/src/js/dashboard.js',
         ],
     },
+    'post_init_hook': 'post_init_hook',
     'installable': True,
     'application': True,
     'auto_install': False,
