@@ -11,8 +11,7 @@ class HrEmployee(models.Model):
         'hr.office.geofence',
         'hr_employee_geofence_rel',
         'employee_id', 'geofence_id',
-        string='Allowed Offices',
-        groups='my_hr.group_my_hr_manager'
+        string='Allowed Offices'
     )
 
     # Payroll fields

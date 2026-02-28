@@ -16,6 +16,7 @@
     'data': [
         # Security
         'security/my_hr_groups.xml',
+        'security/ir_rules.xml',
         
         # Data
         'data/leave_type_data.xml',

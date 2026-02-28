@@ -43,7 +43,6 @@
                 <page string="Geofence Access" name="my_hr_geofence"
                       groups="my_hr.group_my_hr_manager">
                     <field name="allowed_office_ids" widget="many2many_tags"
-                           options="{'color_field': 'color'}"
                            groups="my_hr.group_my_hr_manager"/>
                     <p class="text-muted mt-2">
                         Leave empty to allow check-in from any location.

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Model Access: Grant employees read access to geofence -->
+    <record id="geofence_access_employee" model="ir.model.access">
+        <field name="name">HR Geofence - Employee Access</field>
+        <field name="model_id" ref="model_hr_office_geofence"/>
+        <field name="group_id" ref="base.group_user"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+
+    <!-- Model Access: Grant managers full access to geofence -->
+    <record id="geofence_access_manager" model="ir.model.access">
+        <field name="name">HR Geofence - Manager Access</field>
+        <field name="model_id" ref="model_hr_office_geofence"/>
+        <field name="group_id" ref="my_hr.group_my_hr_manager"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <!-- Allow all authenticated users to read geofence records -->
+    <record id="geofence_read_rule" model="ir.rule">
+        <field name="name">HR Geofence - Read Access</field>
+        <field name="model_id" ref="model_hr_office_geofence"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+        <field name="perm_read" eval="True"/>
+    </record>
+
+    <!-- Allow HR managers to write geofence records -->
+    <record id="geofence_manager_rule" model="ir.rule">
+        <field name="name">HR Geofence - Manager Write Access</field>
+        <field name="model_id" ref="model_hr_office_geofence"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('my_hr.group_my_hr_manager'))]"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+        <field name="perm_read" eval="True"/>
+    </record>
+</odoo>
