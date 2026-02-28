@@ -11,13 +11,14 @@ class DashboardController(http.Controller):
 
     @http.route(
         '/my_hr/dashboard/data',
-        type='json',
+        type='jsonrpc',
         auth='user',
         methods=['POST'],
         csrf=True,
     )
     def get_dashboard_data(self, **kwargs):
         """Return KPI and calendar data for the Employee Dashboard."""
+        _logger.debug('Dashboard data called by uid=%s', request.env.uid)
         try:
             uid = request.env.uid
             employee = request.env['hr.employee'].search(
@@ -45,11 +46,16 @@ class DashboardController(http.Controller):
 
             # --- Next Pay Date ---
             # Find latest published batch that includes this month
-            next_batch = request.env['my_hr.payroll.batch'].search([
-                ('state', '=', 'published'),
-                ('date_to', '>=', today.strftime('%Y-%m-%d')),
-            ], order='date_to asc', limit=1)
-            next_pay_date = next_batch.date_to.strftime('%d %b %Y') if next_batch else 'N/A'
+            # (gracefully skip if user has no payroll access)
+            next_pay_date = 'N/A'
+            try:
+                next_batch = request.env['my_hr.payroll.batch'].search([
+                    ('state', '=', 'published'),
+                    ('date_to', '>=', today.strftime('%Y-%m-%d')),
+                ], order='date_to asc', limit=1)
+                next_pay_date = next_batch.date_to.strftime('%d %b %Y') if next_batch else 'N/A'
+            except Exception as e:
+                _logger.debug('Could not fetch payroll batch (user may lack permissions): %s', str(e))
 
             # --- Hours Worked This Month ---
             attendances = request.env['hr.attendance'].search([
@@ -87,19 +93,24 @@ class DashboardController(http.Controller):
                 })
 
             # --- Recent Payslips ---
-            payslips = request.env['my_hr.payslip'].search([
-                ('employee_id', '=', employee.id),
-                ('state', '=', 'confirmed'),
-            ], order='date_from desc', limit=12)
-            payslip_list = [{
-                'id': p.id,
-                'name': p.display_name,
-                'date': p.date_from.strftime('%B %Y'),
-                'net_salary': p.net_salary,
-                'currency': p.currency_id.symbol or '',
-            } for p in payslips]
+            # (gracefully skip if user has no payroll access)
+            payslip_list = []
+            try:
+                payslips = request.env['my_hr.payslip'].search([
+                    ('employee_id', '=', employee.id),
+                    ('state', '=', 'confirmed'),
+                ], order='date_from desc', limit=12)
+                payslip_list = [{
+                    'id': p.id,
+                    'name': p.display_name,
+                    'date': p.date_from.strftime('%B %Y'),
+                    'net_salary': p.net_salary,
+                    'currency': p.currency_id.symbol or '',
+                } for p in payslips]
+            except Exception as e:
+                _logger.debug('Could not fetch payslips (user may lack permissions): %s', str(e))
 
-            return {
+            result = {
                 'success': True,
                 'employee_name': employee.name,
                 'leave_balance': leave_balance,
@@ -108,6 +119,8 @@ class DashboardController(http.Controller):
                 'calendar_events': calendar_events,
                 'payslips': payslip_list,
             }
+            _logger.debug('Dashboard data result: %s', result)
+            return result
         except Exception as e:
             _logger.exception('Dashboard data error: %s', e)
             return {'success': False, 'error': str(e)}

@@ -11,7 +11,8 @@ class HrEmployee(models.Model):
         'hr.office.geofence',
         'hr_employee_geofence_rel',
         'employee_id', 'geofence_id',
-        string='Allowed Offices'
+        string='Allowed Offices',
+        groups='my_hr.group_my_hr_manager'
     )
 
     # Payroll fields
@@ -59,8 +60,8 @@ class HrEmployee(models.Model):
     bank_account_id = fields.Many2one(
         'res.partner.bank',
         string='Bank Account (WPS)',
-        domain="[('partner_id', '=', address_home_id)]"
     )
+    
 
     # Computed salary components
     housing_allowance = fields.Monetary(

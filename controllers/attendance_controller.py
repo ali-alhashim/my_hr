@@ -14,7 +14,7 @@ class AttendanceController(http.Controller):
 
     @http.route(
         '/my_hr/attendance/check',
-        type='json',
+        type='jsonrpc',
         auth='user',
         methods=['POST'],
         csrf=True,
@@ -102,7 +102,7 @@ class AttendanceController(http.Controller):
 
     @http.route(
         '/my_hr/attendance/status',
-        type='json',
+        type='jsonrpc',
         auth='user',
         methods=['POST'],
         csrf=True,

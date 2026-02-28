@@ -92,7 +92,9 @@ class SystrayCheckin extends Component {
 
     setup() {
         this.notification = useService("notification");
-        this.rpc = useService("rpc");
+        // avoid fetching rpc from services during setup; some contexts
+        // (e.g. early rendering) may not yet provide it. Access lazily when
+        // needed via the getter below.
 
         this.state = useState({
             checkedIn: false,
@@ -105,6 +107,12 @@ class SystrayCheckin extends Component {
         onWillUnmount(() => {
             if (this._pollInterval) clearInterval(this._pollInterval);
         });
+    }
+
+    get rpc() {
+        // lazy accessor for rpc service; throws if not available but that
+        // should happen only if something is seriously wrong.
+        return this.env.services.rpc;
     }
 
     async _loadStatus() {

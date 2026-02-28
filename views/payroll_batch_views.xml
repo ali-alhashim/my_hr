@@ -115,17 +115,6 @@
         <field name="arch" type="xml">
             <search>
                 <field name="name"/>
-                <filter name="draft" string="Draft" domain="[('state','=','draft')]"/>
-                <filter name="pending" string="Pending Approval"
-                        domain="[('state','in',('manager_approve','ceo_approve'))]"/>
-                <filter name="published" string="Published"
-                        domain="[('state','=','published')]"/>
-                <group expand="0" string="Group By">
-                    <filter name="group_state" string="Status"
-                            context="{'group_by': 'state'}"/>
-                    <filter name="group_company" string="Company"
-                            context="{'group_by': 'company_id'}"/>
-                </group>
             </search>
         </field>
     </record>
