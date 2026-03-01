@@ -2,6 +2,127 @@
    my_hr - Main Stylesheet
    ================================================================ */
 
+/* ---- Employee Info Card ---- */
+.my_hr_employee_card {
+    background: #fff;
+    margin: 20px 24px;
+    padding: 24px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    border-left: 5px solid #1a73e8;
+}
+
+.employee_card_left {
+    flex-shrink: 0;
+}
+
+.employee_avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #1a73e8 0%, #0d47a1 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    color: #fff;
+    box-shadow: 0 3px 8px rgba(26, 115, 232, 0.3);
+}
+
+.employee_card_middle {
+    flex: 1;
+    min-width: 0;
+}
+
+.employee_name {
+    margin: 0 0 12px 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1a1a1a;
+}
+
+.employee_detail {
+    display: flex;
+    gap: 8px;
+    margin: 6px 0;
+    font-size: 0.9rem;
+}
+
+.detail_label {
+    font-weight: 600;
+    color: #666;
+    min-width: 80px;
+}
+
+.detail_value {
+    color: #333;
+    font-weight: 500;
+}
+
+.employee_card_right {
+    flex: 1;
+}
+
+.department_info {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.info_block {
+    padding: 12px 16px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border-left: 3px solid #1a73e8;
+}
+
+.info_label {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+}
+
+.info_value {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #1a1a1a;
+    word-break: break-word;
+}
+
+.employee_card_action {
+    flex-shrink: 0;
+}
+
+@media (max-width: 768px) {
+    .my_hr_employee_card {
+        flex-direction: column;
+        text-align: center;
+        gap: 16px;
+        margin: 16px 12px;
+        padding: 16px;
+        border-left: none;
+        border-top: 5px solid #1a73e8;
+    }
+
+    .employee_card_right {
+        width: 100%;
+    }
+
+    .department_info {
+        grid-template-columns: 1fr;
+    }
+
+    .employee_detail {
+        justify-content: center;
+    }
+}
+
 /* ---- Systray Check-in Button ---- */
 .my_hr_checkin_btn {
     display: flex;

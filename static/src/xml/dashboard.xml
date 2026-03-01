@@ -17,16 +17,50 @@
 
             <!-- Dashboard Content -->
             <div t-else="">
+                <!-- Employee Info Card -->
+                <div class="my_hr_employee_card">
+                    <div class="employee_card_left">
+                        <div class="employee_avatar">
+                            <i class="fa fa-user-circle"/>
+                        </div>
+                    </div>
+                    <div class="employee_card_middle">
+                        <h1 class="employee_name" t-esc="state.employee.name"/>
+                        <div class="employee_detail">
+                            <span class="detail_label">Badge ID:</span>
+                            <span class="detail_value" t-esc="state.employee.badge_id"/>
+                        </div>
+                        <div class="employee_detail">
+                            <span class="detail_label">Position:</span>
+                            <span class="detail_value" t-esc="state.employee.job_title"/>
+                        </div>
+                    </div>
+                    <div class="employee_card_right">
+                        <div class="department_info">
+                            <div class="info_block">
+                                <div class="info_label">Department</div>
+                                <div class="info_value" t-esc="state.employee.department"/>
+                            </div>
+                            <div class="info_block">
+                                <div class="info_label">Department Manager</div>
+                                <div class="info_value" t-esc="state.employee.department_manager"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="employee_card_action">
+                        <button class="btn btn-sm btn-outline-primary" t-on-click="_loadData">
+                            <i class="fa fa-refresh me-1"/>Refresh
+                        </button>
+                    </div>
+                </div>
+
                 <!-- Header -->
                 <div class="my_hr_header">
                     <div class="my_hr_header_inner">
                         <h2 class="my_hr_welcome">
-                            <i class="fa fa-user-circle me-2"/>
-                            Welcome, <strong t-esc="state.employeeName"/>
+                            <i class="fa fa-tachometer me-2"/>
+                            Dashboard Overview
                         </h2>
-                        <button class="btn btn-sm btn-outline-light" t-on-click="_loadData">
-                            <i class="fa fa-refresh me-1"/>Refresh
-                        </button>
                     </div>
                 </div>
 
@@ -75,8 +109,21 @@
                     <!-- Calendar -->
                     <div class="my_hr_card my_hr_calendar_card">
                         <div class="my_hr_card_header">
-                            <i class="fa fa-calendar me-2"/>
-                            <span>Attendance Calendar</span>
+                            <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+                                <div style="display: flex; align-items: center;">
+                                    <i class="fa fa-calendar me-2"/>
+                                    <span>Attendance Calendar</span>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <button class="btn btn-sm btn-light" t-on-click="previousMonth" title="Previous Month">
+                                        <i class="fa fa-chevron-left"/>
+                                    </button>
+                                    <span style="min-width: 150px; text-align: center; font-weight: 500;" t-esc="getMonthYearDisplay()"/>
+                                    <button class="btn btn-sm btn-light" t-on-click="nextMonth" title="Next Month">
+                                        <i class="fa fa-chevron-right"/>
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                         <div class="my_hr_calendar" t-if="state.calendar">
                             <!-- Day headers -->

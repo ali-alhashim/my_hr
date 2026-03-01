@@ -29,6 +29,16 @@ class DashboardController(http.Controller):
 
             today = date.today()
             month_start = today.replace(day=1)
+            
+            # --- Employee Info ---
+            employee_data = {
+                'id': employee.id,
+                'name': employee.name,
+                'badge_id': employee.barcode or 'N/A',
+                'department': employee.department_id.name if employee.department_id else 'N/A',
+                'department_manager': employee.department_id.manager_id.name if (employee.department_id and employee.department_id.manager_id) else 'N/A',
+                'job_title': employee.job_title or 'N/A',
+            }
 
             # --- Leave Balance ---
             annual_leave = request.env['hr.leave.type'].search(
@@ -112,6 +122,7 @@ class DashboardController(http.Controller):
 
             result = {
                 'success': True,
+                'employee': employee_data,
                 'employee_name': employee.name,
                 'leave_balance': leave_balance,
                 'next_pay_date': next_pay_date,

@@ -146,6 +146,18 @@
         <field name="arch" type="xml">
             <search>
                 <field name="name"/>
+                <field name="employee_id"/>
+                <field name="manager_id"/>
+                <field name="state"/>
+                
+                <filter name="my_tasks" string="My Tasks" domain="[('employee_id.user_id', '=', uid)]"/>
+                <filter name="my_managed" string="Tasks I Manage" domain="[('manager_id.user_id', '=', uid)]"/>
+                <filter name="submitted" string="Submitted" domain="[('state', '=', 'submitted')]"/>
+                <filter name="assigned" string="Assigned" domain="[('state', '=', 'assigned')]"/>
+                <filter name="done" string="Done" domain="[('state', '=', 'done')]"/>
+                
+                <separator/>
+                <filter name="high_priority" string="High Priority" domain="[('priority', 'in', ['1', '2'])]"/>
             </search>
         </field>
     </record>
