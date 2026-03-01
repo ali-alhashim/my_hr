@@ -42,4 +42,112 @@
         <field name="perm_unlink" eval="True"/>
         <field name="perm_read" eval="True"/>
     </record>
+
+    <!-- Payroll batch access -->
+    <record id="payroll_batch_access_manager" model="ir.model.access">
+        <field name="name">Payroll Batch - Manager Access</field>
+        <field name="model_id" ref="model_my_hr_payroll_batch"/>
+        <field name="group_id" ref="my_hr.group_my_hr_manager"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+    <record id="payroll_batch_access_payroll" model="ir.model.access">
+        <field name="name">Payroll Batch - Payroll Access</field>
+        <field name="model_id" ref="model_my_hr_payroll_batch"/>
+        <field name="group_id" ref="my_hr.group_my_hr_payroll"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <!-- Payslip access -->
+    <record id="payslip_access_employee" model="ir.model.access">
+        <field name="name">Payslip - Employee Access</field>
+        <field name="model_id" ref="model_my_hr_payslip"/>
+        <field name="group_id" ref="my_hr.group_my_hr_employee"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="False"/>
+        <field name="perm_create" eval="False"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+    <record id="payslip_access_payroll" model="ir.model.access">
+        <field name="name">Payslip - Payroll Access</field>
+        <field name="model_id" ref="model_my_hr_payslip"/>
+        <field name="group_id" ref="my_hr.group_my_hr_payroll"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <!-- Task access -->
+    <record id="task_access_employee" model="ir.model.access">
+        <field name="name">HR Task - Employee Access</field>
+        <field name="model_id" ref="model_my_hr_task"/>
+        <field name="group_id" ref="my_hr.group_my_hr_employee"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+    <record id="task_access_manager" model="ir.model.access">
+        <field name="name">HR Task - Manager Access</field>
+        <field name="model_id" ref="model_my_hr_task"/>
+        <field name="group_id" ref="my_hr.group_my_hr_manager"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+
+    <!-- Record rules for payslips and tasks -->
+    <record id="rule_payslip_employee" model="ir.rule">
+        <field name="name">my_hr: rule_payslip_employee</field>
+        <field name="model_id" ref="model_my_hr_payslip"/>
+        <field name="domain_force">[('employee_id.user_id','=',user.id)]</field>
+        <field name="groups" eval="[(4, ref('my_hr.group_my_hr_employee'))]"/>
+        <field name="perm_read" eval="True"/>
+    </record>
+    <record id="rule_payslip_manager" model="ir.rule">
+        <field name="name">my_hr: rule_payslip_manager</field>
+        <field name="model_id" ref="model_my_hr_payslip"/>
+        <field name="domain_force">[('batch_id.company_id','in',user.company_ids.ids)]</field>
+        <field name="groups" eval="[(4, ref('my_hr.group_my_hr_payroll'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+    <record id="rule_task_employee" model="ir.rule">
+        <field name="name">my_hr: rule_task_employee</field>
+        <field name="model_id" ref="model_my_hr_task"/>
+        <field name="domain_force">['|',('employee_id.user_id','=',user.id),('manager_id.user_id','=',user.id)]</field>
+        <field name="groups" eval="[(4, ref('my_hr.group_my_hr_employee'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+    </record>
+    <record id="rule_task_manager" model="ir.rule">
+        <field name="name">my_hr: rule_task_manager</field>
+        <field name="model_id" ref="model_my_hr_task"/>
+        <field name="domain_force">[('employee_id.department_id.manager_id.user_id','=',user.id)]</field>
+        <field name="groups" eval="[(4, ref('my_hr.group_my_hr_manager'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
+    <record id="rule_batch_company" model="ir.rule">
+        <field name="name">my_hr: rule_batch_company</field>
+        <field name="model_id" ref="model_my_hr_payroll_batch"/>
+        <field name="domain_force">[('company_id','in',user.company_ids.ids)]</field>
+        <field name="groups" eval="[(4, ref('my_hr.group_my_hr_payroll'))]"/>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="True"/>
+    </record>
 </odoo>

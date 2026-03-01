@@ -7,11 +7,11 @@
 
     <record id="group_my_hr_manager" model="res.groups">
         <field name="name">My HR / Manager</field>
-        <field name="implied_ids" eval="[(4, ref('group_my_hr_employee'))]"/>
+        <field name="implied_ids" eval="[(4, ref('my_hr.group_my_hr_employee'))]"/>
     </record>
 
     <record id="group_my_hr_payroll" model="res.groups">
         <field name="name">My HR / Payroll Manager</field>
-        <field name="implied_ids" eval="[(4, ref('group_my_hr_manager'))]"/>
+        <field name="implied_ids" eval="[(4, ref('my_hr.group_my_hr_manager'))]"/>
     </record>
 </odoo>

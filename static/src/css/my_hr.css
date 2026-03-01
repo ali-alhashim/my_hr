@@ -432,3 +432,56 @@
     justify-content: center;
     padding: 80px;
 }
+
+/* ---------------------------------------------------------------------------
+   Generic layout fixes (forms, lists) to avoid content being too tight on the
+   left side when viewing HR/Payroll menus. Ensures the container uses full
+   available width and has sensible padding.
+   --------------------------------------------------------------------------- */
+.o_action_manager .o_form_sheet,
+.o_action_manager .o_list_view,
+.o_action_manager .o_kanban_view,
+.o_action_manager .o_search_view,
+.o_action_manager .o_tree_view,
+.o_action_manager .o_graph_view {
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 24px !important;
+}
+
+.o_form_sheet, .o_form_sheet_full_width,
+.o_form_sheet_full_width .o_form_sheet,
+.o_form_sheet_full_width .o_sheet {
+    padding: 24px !important;
+    max-width: none !important;
+    width: 100% !important;
+    margin: 0 auto !important; /* center forms */
+}
+
+/* make sure every child element inside the form sheet can expand */
+.o_form_sheet *,
+.o_form_sheet_full_width *,
+.o_form_sheet_full_width .o_sheet * {
+    max-width: none !important;
+    width: auto !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+
+.o_list_view .o_list_table {
+    margin-left: 0 !important;
+}
+
+/* ensure field groups within forms have consistent left padding */
+.o_form_sheet .o_group {
+    padding-left: 0 !important;
+    margin-left: 0 !important;
+}
+
+/* add bottom margin when hearting panels to avoid left alignment issues */
+.o_form_view .oe_title,
+.o_list_view .oe_title {
+    margin-left: 0 !important;
+}

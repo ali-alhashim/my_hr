@@ -5,7 +5,7 @@
         <field name="name">my_hr.payslip.form</field>
         <field name="model">my_hr.payslip</field>
         <field name="arch" type="xml">
-            <form string="Payslip">
+            <form string="Payslip" class="o_form_sheet_full_width">
                 <header>
                     <button name="action_compute" string="Re-Compute"
                             type="object"
@@ -25,7 +25,7 @@
                     <field name="state" widget="statusbar"
                            statusbar_visible="draft,confirmed"/>
                 </header>
-                <sheet>
+                <sheet class="o_form_sheet_full_width">
                     <div class="oe_title">
                         <h1>
                             <field name="display_name" readonly="1"/>

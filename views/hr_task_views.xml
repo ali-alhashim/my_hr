@@ -5,7 +5,7 @@
         <field name="name">my.hr.task.form</field>
         <field name="model">my.hr.task</field>
         <field name="arch" type="xml">
-            <form string="HR Task / Request">
+            <form string="HR Task / Request" class="o_form_sheet_full_width">
                 <header>
                     <!-- Request flow -->
                     <button name="action_submit" string="Submit Request"
@@ -34,7 +34,7 @@
                     <field name="state" widget="statusbar"
                            statusbar_visible="draft,submitted,assigned,approved,done"/>
                 </header>
-                <sheet>
+                <sheet class="o_form_sheet_full_width">
                     <widget name="web_ribbon" text="Rejected" bg_color="text-bg-danger"
                             invisible="state != 'rejected'"/>
                     <div class="oe_title">

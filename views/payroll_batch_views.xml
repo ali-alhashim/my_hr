@@ -29,7 +29,7 @@
         <field name="name">my_hr.payroll.batch.form</field>
         <field name="model">my_hr.payroll.batch</field>
         <field name="arch" type="xml">
-            <form string="Payroll Batch">
+            <form string="Payroll Batch" class="o_form_sheet_full_width">
                 <header>
                     <button name="action_generate_payslips" string="Generate Payslips"
                             type="object" class="btn-primary"
@@ -60,7 +60,7 @@
                     <field name="state" widget="statusbar"
                            statusbar_visible="draft,manager_approve,ceo_approve,published"/>
                 </header>
-                <sheet>
+                <sheet class="o_form_sheet_full_width">
                     <div class="oe_title">
                         <h1>
                             <field name="name" readonly="state != 'draft'"
